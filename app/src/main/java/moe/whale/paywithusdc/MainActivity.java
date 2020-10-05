@@ -2,6 +2,7 @@ package moe.whale.paywithusdc;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -24,8 +25,7 @@ public class MainActivity extends AppCompatActivity {
         newWallet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), getString(R.string.common_new), Toast.LENGTH_SHORT).show();
-                System.out.println("asfasdfdsfdsfsdddfdfdf;sdka");
+                startNewWalletActivity();
             }
         });
 
@@ -33,9 +33,15 @@ public class MainActivity extends AppCompatActivity {
         loadWallet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), getString(R.string.common_load), Toast.LENGTH_SHORT).show();
-                System.out.println("salfjasfjasdjfl;sdka");
+                Toast
+                    .makeText(getApplicationContext(), getString(R.string.common_load), Toast.LENGTH_SHORT)
+                    .show();
             }
         });
+    }
+
+    private void startNewWalletActivity() {
+        Intent i = new Intent(this, NewWalletActivity.class);
+        startActivity(i);
     }
 }

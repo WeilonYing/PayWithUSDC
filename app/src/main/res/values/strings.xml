@@ -2,6 +2,11 @@
     <string name="app_name">Pay With USDC</string>
     <string name="main_activity_intro">In order to continue, you will need an Ethereum wallet file.
         You may either create a new wallet file or load one that already exists.</string>
+
+    <!-- NewWalletActivity -->
+    <string name="new_wallet_activity_title">Create New Wallet</string>
+
+    <!-- Common strings -->
     <string name="common_new">New</string>
     <string name="common_load">Load</string>
 </resources>
