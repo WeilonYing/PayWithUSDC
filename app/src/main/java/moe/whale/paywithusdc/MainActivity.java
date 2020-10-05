@@ -61,12 +61,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startNewWalletActivity() {
+        DEBUG_createNewWalletFile();
         Intent i = new Intent(this, NewWalletActivity.class);
         startActivity(i);
     }
 
     private void startLoadWalletFilePicker() {
-        DEBUG_createNewWalletFile();
+        DEBUG_loadWalletFile();
         Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
 
         i.addCategory(Intent.CATEGORY_OPENABLE);
@@ -94,9 +95,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void DEBUG_createNewWalletFile() {
-        verifyStoragePermissions(this);
         try {
             WalletUtils.generateNewWalletFile("password", new File(Environment.getExternalStorageDirectory().getPath() + "/Download"));
+        } catch (CipherException e) {
+            e.printStackTrace();
+        } catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void DEBUG_loadWalletFile(){
+        verifyStoragePermissions(this);
+        try {
+            WalletUtils.loadCredentials(
+                    "password",
+                    new File(Environment.getExternalStorageDirectory().getPath() + "/Download"));
         } catch (CipherException e) {
             e.printStackTrace();
         } catch (InvalidAlgorithmParameterException e) {
