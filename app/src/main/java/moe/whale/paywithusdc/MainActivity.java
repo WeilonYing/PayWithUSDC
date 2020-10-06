@@ -8,14 +8,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.web3j.abi.datatypes.Array;
 import org.web3j.crypto.CipherException;
+import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
+import org.web3j.protocol.Web3j;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,22 +49,42 @@ public class MainActivity extends AppCompatActivity {
         newWallet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startNewWalletActivity();
+                createNewWallet();
             }
         });
 
-        Button loadWallet = findViewById(R.id.activity_main_button_load);
+        final Button loadWallet = findViewById(R.id.activity_main_button_load);
         loadWallet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startLoadWalletFilePicker();
+                loadWallet();
             }
         });
     }
 
-    private void startNewWalletActivity() {
-        Intent i = new Intent(this, NewWalletActivity.class);
-        startActivity(i);
+    private void createNewWallet() {
+        DEBUG_createNewWalletFile();
+        String[] files = new File(getApplicationContext().getFilesDir(), "wallet").list();
+        for (String s : files) {
+            System.out.println("Files: " + s);
+        }
+    }
+
+    private void loadWallet() {
+        File walletDir = new File(getApplicationContext().getFilesDir(), "wallet");
+        String[] files = walletDir.list();
+        File wallet = new File(walletDir, files[0]);
+
+        try {
+            WalletUtils.loadCredentials("password", wallet);
+            Toast.makeText(getApplicationContext(), "Wallet load successful", Toast.LENGTH_SHORT).show();
+            Web3j w;
+            w.ethGetBalance()
+        } catch (CipherException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void startLoadWalletFilePicker() {
@@ -96,7 +118,26 @@ public class MainActivity extends AppCompatActivity {
     private void DEBUG_createNewWalletFile() {
         verifyStoragePermissions(this);
         try {
-            WalletUtils.generateNewWalletFile("password", new File(Environment.getExternalStorageDirectory().getPath() + "/Download"));
+            File walletDirectory = new File(getApplicationContext().getFilesDir(), "/wallet");
+
+            // Create a new wallet directory if not exists, and throw an IO exception if that fails.
+            if (!walletDirectory.exists() && !walletDirectory.mkdir()) {
+                throw new IOException("Unable to create wallet directory");
+            }
+
+            String[] children = walletDirectory.list();
+            if (children != null) {
+                for (String c : children) {
+                    new File(walletDirectory, c).delete();
+                }
+            }
+
+            WalletUtils.generateNewWalletFile("password", walletDirectory);
+            children = walletDirectory.list();
+            if (children != null && children.length > 0) {
+                File renamedFile = new File(walletDirectory, "wallet.json");
+                new File(walletDirectory, children[0]).renameTo(renamedFile);
+            }
         } catch (CipherException e) {
             e.printStackTrace();
         } catch (InvalidAlgorithmParameterException e) {
@@ -112,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Checks if the app has permission to write to device storage
-     *
+     * <p>
      * If the app does not has permission then the user will be prompted to grant permissions
      *
      * @param activity
