@@ -105,5 +105,11 @@
 
     <!-- SendMoneyActivity -->
     <string name="title_activity_send_money">Send Money</string>
+    <string name="send_money_amount_hint">$0</string>
+    <string name="send_money_send_view">Send…</string>
+    <string name="send_money_to_address_view">to this address:</string>
+    <string name="send_money_address_hint">0x123456…</string>
+    <string name="send_money_send_button">Send</string>
+    <string name="send_money_input_validation_snackbar">Amount and address cannot be empty.</string>
 
 </resources>
