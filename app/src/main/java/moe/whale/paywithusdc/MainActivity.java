@@ -78,8 +78,8 @@ public class MainActivity extends AppCompatActivity {
         try {
             WalletUtils.loadCredentials("password", wallet);
             Toast.makeText(getApplicationContext(), "Wallet load successful", Toast.LENGTH_SHORT).show();
-            Web3j w;
-            w.ethGetBalance()
+            Intent balanceIntent = new Intent(this, BalanceActivity.class);
+            startActivity(balanceIntent);
         } catch (CipherException e) {
             e.printStackTrace();
         } catch (IOException e) {
