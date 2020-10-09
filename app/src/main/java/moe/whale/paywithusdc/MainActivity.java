@@ -27,6 +27,8 @@ import java.security.NoSuchProviderException;
 import java.security.Provider;
 import java.security.Security;
 
+import moe.whale.paywithusdc.utils.Utils;
+
 public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
@@ -71,19 +73,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadWallet() {
-        File walletDir = new File(getApplicationContext().getFilesDir(), "wallet");
-        String[] files = walletDir.list();
-        File wallet = new File(walletDir, files[0]);
-
-        try {
-            WalletUtils.loadCredentials("password", wallet);
-            Toast.makeText(getApplicationContext(), "Wallet load successful", Toast.LENGTH_SHORT).show();
+        Credentials wallet = Utils.loadCredentials(getApplicationContext());
+        if (wallet != null) {
             Intent balanceIntent = new Intent(this, BalanceActivity.class);
             startActivity(balanceIntent);
-        } catch (CipherException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
