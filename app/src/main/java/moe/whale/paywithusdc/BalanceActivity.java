@@ -11,10 +11,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.View;
+import android.widget.Toast;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.Request;
+import org.web3j.protocol.core.methods.response.EthGetBalance;
 
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.concurrent.ExecutionException;
+
+import moe.whale.paywithusdc.utils.Callback;
 import moe.whale.paywithusdc.utils.Utils;
 
 public class BalanceActivity extends AppCompatActivity {
@@ -29,7 +38,19 @@ public class BalanceActivity extends AppCompatActivity {
         toolBarLayout.setTitle(getTitle());
 
         Credentials wallet = Utils.loadCredentials(getApplicationContext());
-        Web3j web3j = Utils.loadWeb3(getApplicationContext());
+        Utils.loadWeb3(getApplicationContext(), web3j -> {
+            Request<?, EthGetBalance> getBalanceRequest =
+                web3j.ethGetBalance(wallet.getAddress(), DefaultBlockParameterName.LATEST);
+            try {
+                BigInteger balance = getBalanceRequest.sendAsync().get().getBalance();
+                Toast.makeText(getApplicationContext(), balance.toString(), Toast.LENGTH_LONG).show();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        });
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

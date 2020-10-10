@@ -2,6 +2,7 @@ package moe.whale.paywithusdc.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.widget.Toast;
 
 import org.web3j.crypto.CipherException;
@@ -47,14 +48,44 @@ public class Utils {
         mCredentials = null;
     }
 
-    public static Web3j loadWeb3(Context context) {
+    public static void loadWeb3(Context context, Callback<Web3j> onWeb3jLoadedCallback) {
         if (mWeb3j == null) {
-            mWeb3j = Web3j.build(
-                new HttpService(
+            String url =
                 context.getString(R.string.common_infura_mainnet_url) +
-                    context.getString(R.string.secret_infura_project_id)));
+                context.getString(R.string.secret_infura_project_id);
+
+            new Web3LoadTask(
+                new Callback<Web3j>() {
+                    @Override
+                    public void callback(Web3j web3j) {
+                        mWeb3j = web3j;
+                        onWeb3jLoadedCallback.callback(web3j);
+                    }
+                }
+            ).execute(url);
+            return;
         }
 
-        return mWeb3j;
+        onWeb3jLoadedCallback.callback(mWeb3j);
     }
 }
+
+class Web3LoadTask extends AsyncTask<String, Void, Web3j> {
+    private Callback<Web3j> mCallback;
+
+    public Web3LoadTask(Callback<Web3j> callback) {
+        super();
+        mCallback = callback;
+    }
+
+    @Override
+    protected Web3j doInBackground(String... urls) {
+        return Web3j.build(new HttpService(urls[0]));
+    }
+
+    @Override
+    protected void onPostExecute(Web3j web3j) {
+        mCallback.callback(web3j);
+    }
+}
+
