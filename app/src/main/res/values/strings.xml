@@ -9,7 +9,7 @@
     <!-- Common strings -->
     <string name="common_new">New</string>
     <string name="common_load">Load</string>
-    <string name="common_infura_mainnet_url">https://mainnet.infura.io/v3/</string>
+    <string name="common_infura_mainnet_url">https://kovan.infura.io/v3/</string>
     <string name="action_settings">Settings</string>
 
     <!-- BalanceActivity -->

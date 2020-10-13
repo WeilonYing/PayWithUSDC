@@ -3,6 +3,7 @@ package moe.whale.paywithusdc.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.FileUtils;
 import android.widget.Toast;
 
 import org.web3j.crypto.CipherException;
@@ -12,6 +13,8 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import moe.whale.paywithusdc.BalanceActivity;
@@ -30,6 +33,13 @@ public class Utils {
                     File wallet = new File(walletDir, files[0]);
                     mCredentials = WalletUtils.loadCredentials("password", wallet);
                     Toast.makeText(context, "Wallet load successful", Toast.LENGTH_SHORT).show();
+
+                    // DEBUG
+//                    File extPath = new File("/storage/emulated/0/Download");
+//                    File externalFile = new File(extPath, "wallet.json");
+//                    System.out.println(externalFile.toPath());
+//                    externalFile.createNewFile();
+//                    FileUtils.copy(new FileInputStream(wallet), new FileOutputStream(externalFile));
             }
         } catch (CipherException e) {
             e.printStackTrace();

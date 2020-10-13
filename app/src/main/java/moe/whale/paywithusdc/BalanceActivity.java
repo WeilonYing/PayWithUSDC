@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.web3j.crypto.Credentials;
@@ -38,12 +39,19 @@ public class BalanceActivity extends AppCompatActivity {
         toolBarLayout.setTitle(getTitle());
 
         Credentials wallet = Utils.loadCredentials(getApplicationContext());
+        TextView addressView = (TextView) findViewById(R.id.activity_balance_address);
+        String address = wallet.getAddress();
+        System.out.println(wallet.getEcKeyPair().getPrivateKey());
+        addressView.setText(address);
+        System.out.println(address);
         Utils.loadWeb3(getApplicationContext(), web3j -> {
             Request<?, EthGetBalance> getBalanceRequest =
                 web3j.ethGetBalance(wallet.getAddress(), DefaultBlockParameterName.LATEST);
             try {
                 BigInteger balance = getBalanceRequest.sendAsync().get().getBalance();
                 Toast.makeText(getApplicationContext(), balance.toString(), Toast.LENGTH_LONG).show();
+                TextView balanceView = (TextView) findViewById(R.id.activity_balance_account_balance);
+                balanceView.setText(balance.toString());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {

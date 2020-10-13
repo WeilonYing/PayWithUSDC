@@ -8,10 +8,21 @@
     tools:context=".BalanceActivity"
     tools:showIn="@layout/activity_balance">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:text="@string/large_text" />
-
+        android:orientation="vertical">
+            <TextView
+                android:id="@+id/activity_balance_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_margin"
+                android:text="placeholder" />
+            <TextView
+                android:id="@+id/activity_balance_account_balance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_margin"
+                android:text="placeholder" />
+    </LinearLayout>
 </androidx.core.widget.NestedScrollView>
