@@ -91,3 +91,4 @@ lint/tmp/
 *.hprof
 
 node_modules
+truffle-config.js
