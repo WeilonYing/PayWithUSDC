@@ -6,8 +6,20 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
+
+import org.web3j.crypto.Credentials;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.Request;
+import org.web3j.protocol.core.methods.response.EthGetBalance;
+
+import java.math.BigInteger;
+import java.util.concurrent.ExecutionException;
+
+import moe.whale.paywithusdc.utils.Utils;
 
 public class SendMoneyActivity extends AppCompatActivity {
 
@@ -46,6 +58,22 @@ public class SendMoneyActivity extends AppCompatActivity {
                 "Amount: " + amount + ", Address: " + address,
                 Snackbar.LENGTH_LONG)
             .show();
+
+        Credentials wallet = Utils.loadCredentials(getApplicationContext());
+        Utils.loadWeb3(getApplicationContext(), web3j -> {
+            Request<?, EthGetBalance> getBalanceRequest =
+                    web3j.ethGetBalance(wallet.getAddress(), DefaultBlockParameterName.LATEST);
+            try {
+                BigInteger balance = getBalanceRequest.sendAsync().get().getBalance();
+                Toast.makeText(getApplicationContext(), balance.toString(), Toast.LENGTH_LONG).show();
+                TextView balanceView = (TextView) findViewById(R.id.activity_balance_account_balance);
+                balanceView.setText(balance.toString());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        });
 
     }
 }

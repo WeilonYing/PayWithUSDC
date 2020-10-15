@@ -67,10 +67,12 @@ public class BalanceActivity extends AppCompatActivity {
                 startBalanceActivity();
             }
         });
+
     }
 
     private void startBalanceActivity() {
         Intent i = new Intent(this, SendMoneyActivity.class);
         startActivity(i);
+
     }
 }

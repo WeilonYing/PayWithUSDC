@@ -1,8 +1,7 @@
-const ConvertLib = artifacts.require("ConvertLib");
-const MetaCoin = artifacts.require("MetaCoin");
+const SendMoneyDirect = artifacts.require("SendMoneyDirect");
+const SendMoney = artifacts.require("SendMoney");
 
 module.exports = function(deployer) {
-  deployer.deploy(ConvertLib);
-  deployer.link(ConvertLib, MetaCoin);
-  deployer.deploy(MetaCoin);
+  deployer.deploy(SendMoneyDirect);
+  //deployer.deploy(SendMoney);
 };

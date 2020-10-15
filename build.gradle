@@ -3,6 +3,9 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:4.0.1"
@@ -12,6 +15,27 @@ buildscript {
     }
 }
 
+plugins {
+    id "org.web3j" version "4.7.0"
+}
+
+sourceSets {
+    main {
+        solidity {
+            srcDir {
+                "app/src/solidity"
+            }
+        }
+    }
+}
+
+web3j {
+    generatedPackageName = 'moe.whale.paywithusdc.contracts'
+    generatedFilesBaseDir = "app/src"
+    excludedContracts = ['Ownable']
+    useNativeJavaTypes = true
+}
+
 allprojects {
     repositories {
         google()
@@ -19,6 +43,6 @@ allprojects {
     }
 }
 
-task clean(type: Delete) {
+task cleanup(type: Delete) {
     delete rootProject.buildDir
 }

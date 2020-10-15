@@ -1,3 +1,4 @@
+**.*/truffle-config.js
 **/*/res/values/secrets.xml
 
 # Built application files
@@ -89,3 +90,4 @@ lint/tmp/
 # Android Profiling
 *.hprof
 
+node_modules
