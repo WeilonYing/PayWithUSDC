@@ -171,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(Void _v) {
                 hideNewWalletUI();
+                loadWallet();
             }
         }.execute();
     }

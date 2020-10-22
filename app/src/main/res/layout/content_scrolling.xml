@@ -18,17 +18,41 @@
             android:layout_height="wrap_content" />
 
         <TextView
-                android:id="@+id/activity_balance_address"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/text_margin"
-                android:text="placeholder" />
-            <TextView
-                android:id="@+id/activity_balance_account_balance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/text_margin"
-                android:text="Your ETH balance is: " />
+            android:id="@+id/activity_balance_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:fontFamily="sans-serif-light"
+            android:text="Your address is:"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/activity_balance_account_balance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:fontFamily="sans-serif-light"
+            android:text="Your ETH balance is: "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/activity_balance_account_balance2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:fontFamily="sans-serif-light"
+            android:text="Past transactions"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/activity_balance_transaction_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:text="Your transactions will appear here"
+            android:textAlignment="center"
+            android:textStyle="italic" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
