@@ -1,24 +1,21 @@
 package moe.whale.paywithusdc;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.web3j.crypto.CipherException;
-import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -38,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initButtons();
         verifyAppPermissions();
+        hideNewWalletUI();
+        loadWallet();
     }
 
     private void initButtons() {
@@ -59,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createNewWallet() {
-        DEBUG_createNewWalletFile();
+        createNewWalletFile();
         String[] files = new File(getApplicationContext().getFilesDir(), "wallet").list();
         for (String s : files) {
             System.out.println("Files: " + s);
@@ -67,15 +66,40 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadWallet() {
-        Credentials wallet = Utils.loadCredentials(getApplicationContext());
-        if (wallet != null) {
-            Intent balanceIntent = new Intent(this, BalanceActivity.class);
-            startActivity(balanceIntent);
-        }
+        setFindingWalletVisibility(View.VISIBLE);
+        Utils.loadCredentials(getApplicationContext(), wallet -> {
+            if (wallet != null) {
+                Intent balanceIntent = new Intent(this, BalanceActivity.class);
+                startActivity(balanceIntent);
+            } else {
+                showNewWalletInfo();
+            }
+            setFindingWalletVisibility(View.INVISIBLE);
+        });
+    }
+
+    private void setFindingWalletVisibility(int visibility) {
+        findViewById(R.id.activity_main_progressbar).setVisibility(visibility);
+        findViewById(R.id.activity_main_findingwallet_text).setVisibility(visibility);
+    }
+
+    private void showNewWalletInfo() {
+        findViewById(R.id.main_activity_textview_newwallet_text).setVisibility(View.VISIBLE);
+        findViewById(R.id.activity_main_button_new).setVisibility(View.VISIBLE);
+    }
+
+    private void showCreatingWallet() {
+        findViewById(R.id.activity_main_progressbar).setVisibility(View.VISIBLE);
+    }
+
+    private void hideNewWalletUI() {
+        findViewById(R.id.activity_main_progressbar).setVisibility(View.INVISIBLE);
+        findViewById(R.id.activity_main_button_new).setVisibility(View.INVISIBLE);
+        findViewById(R.id.main_activity_textview_newwallet_text).setVisibility(View.INVISIBLE);
     }
 
     private void startLoadWalletFilePicker() {
-        DEBUG_createNewWalletFile();
+        createNewWalletFile();
         Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
 
         i.addCategory(Intent.CATEGORY_OPENABLE);
@@ -102,39 +126,53 @@ public class MainActivity extends AppCompatActivity {
         Security.insertProviderAt(new BouncyCastleProvider(), 1);
     }
 
-    private void DEBUG_createNewWalletFile() {
-        try {
-            File walletDirectory = new File(getApplicationContext().getFilesDir(), "/wallet");
-
-            // Create a new wallet directory if not exists, and throw an IO exception if that fails.
-            if (!walletDirectory.exists() && !walletDirectory.mkdir()) {
-                throw new IOException("Unable to create wallet directory");
+    private void createNewWalletFile() {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected void onPreExecute() {
+                showCreatingWallet();
             }
+            @Override
+            protected Void doInBackground(Void... voids) {
+                try {
+                    File walletDirectory = new File(getApplicationContext().getFilesDir(), "/wallet");
 
-            String[] children = walletDirectory.list();
-            if (children != null) {
-                for (String c : children) {
-                    new File(walletDirectory, c).delete();
+                    // Create a new wallet directory if not exists, and throw an IO exception if that fails.
+                    if (!walletDirectory.exists() && !walletDirectory.mkdir()) {
+                        throw new IOException("Unable to create wallet directory");
+                    }
+
+                    String[] children = walletDirectory.list();
+                    if (children != null) {
+                        for (String c : children) {
+                            new File(walletDirectory, c).delete();
+                        }
+                    }
+
+                    WalletUtils.generateNewWalletFile("password", walletDirectory);
+                    children = walletDirectory.list();
+                    if (children != null && children.length > 0) {
+                        File renamedFile = new File(walletDirectory, "wallet.json");
+                        new File(walletDirectory, children[0]).renameTo(renamedFile);
+                    }
+                } catch (CipherException e) {
+                    e.printStackTrace();
+                } catch (InvalidAlgorithmParameterException e) {
+                    e.printStackTrace();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (NoSuchProviderException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+                return null;
             }
-
-            WalletUtils.generateNewWalletFile("password", walletDirectory);
-            children = walletDirectory.list();
-            if (children != null && children.length > 0) {
-                File renamedFile = new File(walletDirectory, "wallet.json");
-                new File(walletDirectory, children[0]).renameTo(renamedFile);
+            @Override
+            protected void onPostExecute(Void _v) {
+                hideNewWalletUI();
             }
-        } catch (CipherException e) {
-            e.printStackTrace();
-        } catch (InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchProviderException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        }.execute();
     }
 
     public void verifyAppPermissions() {

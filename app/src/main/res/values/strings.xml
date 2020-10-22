@@ -1,19 +1,17 @@
 <resources>
     <string name="app_name">Pay With USDC</string>
-    <string name="main_activity_intro">In order to continue, you will need an Ethereum wallet file.
-        You may either create a new wallet file or load one that already exists.</string>
-
-    <!-- NewWalletActivity -->
-    <string name="new_wallet_activity_title">Create New Wallet</string>
+    <string name="main_activity_intro">In order to continue, you will need an Ethereum wallet file.</string>
+    <string name="new_wallet_button_title">Create New Wallet</string>
 
     <!-- Common strings -->
     <string name="common_new">New</string>
     <string name="common_load">Load</string>
-    <string name="common_infura_mainnet_url">https://ropsten.infura.io/v3/</string>
+    <string name="common_infura_mainnet_url">https://goerli.infura.io/v3/</string>
     <string name="action_settings">Settings</string>
 
     <!-- BalanceActivity -->
-    <string name="title_activity_balance">Welcome</string>
+    <string name="title_activity_balance">Welcome back!</string>
+    <string name="balance_activity_your_usdc_balance">Your USDC balance: </string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
